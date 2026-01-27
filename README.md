@@ -48,6 +48,21 @@ There is no `Dockerfile` in this project. You can build a container image (if yo
 ./mvnw spring-boot:build-image
 ```
 
+## Renovate
+
+Die Renovate-Konfiguration liegt in `renovate.json` im Projekt-Root.
+
+Um Renovate lokal via Docker auszuführen und PRs in GitHub zu öffnen, gib ein
+GitHub-PAT mit Repo-Rechten an und führe aus:
+
+```bash
+docker run --rm -it \
+  -e RENOVATE_PLATFORM=github \
+  -e RENOVATE_TOKEN=<GITHUB_PAT> \
+  -e RENOVATE_REPOSITORIES=<org>/<repo> \
+  renovate/renovate:latest
+```
+
 ## In case you find a bug/suggested improvement for Spring Petclinic
 
 Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
