@@ -77,6 +77,20 @@ docker build -f Dockerfile_Scratch -t petclinic:scratch .
 trivy image --scanners vuln,secret petclinic:scratch
 ```
 
+## Hadolint
+
+Hadolint with [Dockerfile](Dockerfile)
+
+```bash
+docker run --rm -i hadolint/hadolint hadolint - < Dockerfile
+```
+
+Hadolint with [Dockerfile_Scratch](Dockerfile_Scratch)
+
+```bash
+docker run --rm -i hadolint/hadolint hadolint - < Dockerfile_Scratch
+```
+
 ## In case you find a bug/suggested improvement for Spring Petclinic
 
 Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
