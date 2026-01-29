@@ -1,0 +1,33 @@
+# -------------------------- #
+# ---- Build-Stage: JRE ---- #
+# -------------------------- #
+FROM eclipse-temurin:25-jre-alpine-3.22 AS jre
+
+WORKDIR /app
+RUN mkdir tmp
+
+# -------------------------------- #
+# ---- Runtime-Stage: Scratch ---- #
+# -------------------------------- #
+FROM scratch
+
+# Java
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH="${JAVA_HOME}/bin"
+ENV JDK_JAVA_OPTIONS=""
+COPY --from=jre ${JAVA_HOME} ${JAVA_HOME}
+COPY --from=jre --chown=1001:0 /app/tmp /tmp
+
+# Dependencies: ldd /opt/java/openjdk/bin/java
+COPY --from=jre /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+COPY --from=jre /lib/libc.musl-x86_64.so.1 /lib/libc.musl-x86_64.so.1
+
+USER 1001
+WORKDIR /app
+
+ARG JAR_FILE=target/spring-petclinic-4.0.0-SNAPSHOT.jar
+COPY ${JAR_FILE} app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

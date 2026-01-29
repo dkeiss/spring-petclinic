@@ -50,17 +50,31 @@ There is no `Dockerfile` in this project. You can build a container image (if yo
 
 ## Renovate
 
-Die Renovate-Konfiguration liegt in `renovate.json` im Projekt-Root.
-
-Um Renovate lokal via Docker auszuführen und PRs in GitHub zu öffnen, gib ein
-GitHub-PAT mit Repo-Rechten an und führe aus:
+Run Renovate against Github:
+_'RENOVATE_TOKEN' muss be set as env._
 
 ```bash
 docker run --rm -it \
   -e RENOVATE_PLATFORM=github \
-  -e RENOVATE_TOKEN=<GITHUB_PAT> \
-  -e RENOVATE_REPOSITORIES=<org>/<repo> \
+  -e RENOVATE_TOKEN=$RENOVATE_TOKEN \
+  -e RENOVATE_REPOSITORIES=dkeiss/spring-petclinic \
   renovate/renovate:latest
+```
+
+## Trivy
+
+Trivy with [Dockerfile](Dockerfile)
+
+```bash
+docker build -t petclinic:local .
+trivy image --scanners vuln,secret petclinic:local
+```
+
+Trivy with [Dockerfile_Scratch](Dockerfile_Scratch)
+
+```bash
+docker build -f Dockerfile_Scratch -t petclinic:scratch .
+trivy image --scanners vuln,secret petclinic:scratch
 ```
 
 ## In case you find a bug/suggested improvement for Spring Petclinic
