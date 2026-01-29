@@ -77,6 +77,24 @@ docker build -f Dockerfile_Scratch -t petclinic:scratch .
 trivy image --scanners vuln,secret petclinic:scratch
 ```
 
+## OWASP ZAP
+
+Example: Run Petclinic in Docker and scan it locally with OWASP ZAP.
+
+```bash
+docker build -t petclinic:local .
+docker network create zap-net
+docker run --rm -d --name petclinic --network zap-net -p 8080:8080 petclinic:local
+docker run --rm --network zap-net \
+  -v "$(pwd):/zap/wrk" \
+  -t zaproxy/zap-stable \
+  zap-baseline.py -t http://petclinic:8080 -c zap-baseline.conf -r zap-report.html
+docker rm -f petclinic
+```
+
+The report will be written to `zap-report.html` in the repo root. You can adjust alert handling in
+`zap-baseline.conf`.
+
 ## In case you find a bug/suggested improvement for Spring Petclinic
 
 Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).
