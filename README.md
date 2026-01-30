@@ -77,6 +77,20 @@ docker build -f Dockerfile_Scratch -t petclinic:scratch .
 trivy image --scanners vuln,secret petclinic:scratch
 ```
 
+## Hadolint
+
+Hadolint with [Dockerfile](Dockerfile)
+
+```bash
+docker run --rm -i hadolint/hadolint hadolint -f json - < Dockerfile
+```
+
+Hadolint with [Dockerfile_Scratch](Dockerfile_Scratch)
+
+```bash
+docker run --rm -i hadolint/hadolint hadolint -f json - < Dockerfile_Scratch
+```
+
 ## OWASP ZAP
 
 Example: Run Petclinic in Docker and scan it locally with OWASP ZAP.
@@ -86,9 +100,10 @@ docker build -t petclinic:local .
 docker network create zap-net
 docker run --rm -d --name petclinic --network zap-net -p 8080:8080 petclinic:local
 docker run --rm --network zap-net \
-  -v "$(pwd):/zap/wrk" \
+  -v "$(pwd -W):/zap/wrk" \
   -t zaproxy/zap-stable \
-  zap-baseline.py -t http://petclinic:8080 -c zap-baseline.conf -r zap-report.html
+  zap-baseline.py -t http://petclinic:8080 \
+  -r zap-report.html
 docker rm -f petclinic
 ```
 
